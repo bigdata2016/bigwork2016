@@ -1,0 +1,7 @@
+num = 3
+row = 2**3
+matrix = [[0 for i in range(num)]for i in range(row)]
+for i in range(0, row):
+	matrix[i][2] = i%2
+	matrix[i][1] = (i//2)%2
+	matrix[i][0] = ((i//2)//2)%2
