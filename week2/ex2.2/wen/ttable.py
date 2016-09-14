@@ -18,7 +18,6 @@ def list_tt (in_put):
 		tt.append(pattern)
 	return tt
 
-
 if in_put <= 0:
 	print("invalid number")
 else:
