@@ -1,6 +1,0 @@
-lines=np.loadtxt(filename,delimiter=',')
-A=lines[0:3,0:3]
-A=np.mat(A)
-b=lines[0:3,3]
-x=np.linalg.solve(A,b)
-print (x)
