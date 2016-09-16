@@ -1,0 +1,15 @@
+import numpy as np
+import matplotlib.pyplot as pl
+from scipy.optimize import fsolve
+lines=np.loadtxt(filename,delimiter=' ')
+x=lines[:len(lines),0]
+y=lines[:len(lines),1]
+coe=np.polyfit(x,y,3)
+itp=np.poly1d(coe)
+pl.plot(x, y, 'b^-', label='Origin Line')
+pl.plot(x, itp(x), 'gv--', label='Poly Fitting Line(deg=3)')
+pl.axis([-20,20,-25000,25000])
+pl.legend()
+pl.savefig('ex3_2.png',dpi=96)
+result=fsolve(itp,0)
+print(result)
