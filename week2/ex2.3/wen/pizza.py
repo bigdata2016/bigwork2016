@@ -16,7 +16,7 @@ def bag_words(*request_txt):
 	word_list=[]
 	for i in range(0, len(request_txt)-1, +1):
 		uniq_word=[]
-		uniq_word=set(request_txt[i].split(' ', len(request_txt[i])-1))
+		uniq_word=set(request_txt[i].split(' ')
 		word_list.append(sorted(uniq_word))
 	return word_list						#return set(uniq_word[0]) #return len(uniq_word) #return word_list[0]
 	
