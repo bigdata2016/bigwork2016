@@ -1,0 +1,12 @@
+def read_matrix(filename):  
+    f = open(filename)  
+    arr = f.readlines()   
+    num = len(arr)  
+    mat = zeros((num,3))
+    index = 0   
+    for line in arr:  
+        line = line.strip()  
+        linelist = line.split(',') 
+        mat[index,:] = linelist[0:3]  
+        index +=1  
+    return mat
