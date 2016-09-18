@@ -1,0 +1,1 @@
+The exercies is to test version control between EC2 and local machine.

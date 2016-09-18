@@ -1,0 +1,10 @@
+import pandas as pd
+movies=pd.read_table('E:/repo/bigwork2016/week3/ex3.3/ml-1m/movies.dat',sep='::',header=None)
+movies.columns=['movie_id','title','genre']
+users=pd.read_table('E:/repo/bigwork2016/week3/ex3.3/ml-1m/users.dat',sep='::',header=None)
+users.columns=['user_id','gender','age','occupation_code','zip']
+ratings=pd.read_table('E:/repo/bigwork2016/week3/ex3.3/ml-1m/ratings.dat',sep='::',header=None)
+ratings.columns=['user_id', 'movie_id', 'rating', 'timestamp']
+data=pd.merge(movies,ratings,on='movie_id')
+data=pd.merge(data,users,on='user_id')
+data.to_csv('movie_data.csv')
