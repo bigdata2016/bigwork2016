@@ -16,18 +16,20 @@ with con:
 	#print prd_name
 
 ###Lookup CustomerIDs Same key value
-	cur.execute("SELECT ProductName FROM 'Products' WHERE ProductID IN( 			\
-				 SELECT DISTINCT ProductID FROM 'Order Details' WHERE OrderID IN(	\
-				 SELECT OrderID FROM 'Orders' WHERE CustomerID IN(					\
-				 SELECT CustomerID FROM 'Orders' WHERE OrderID IN 					\
-				(SELECT OrderID FROM 'Order Details' WHERE ProductID=7))))")
+	cur.execute("SELECT Products.ProductID, Products.ProductName					\
+				 FROM 'Products'													\
+				 WHERE Products.ProductName IN(										\
+				 	SELECT ProductName FROM 'Products' WHERE ProductID IN( 			\
+				 	SELECT DISTINCT ProductID FROM 'Order Details' WHERE OrderID IN(\
+				 	SELECT OrderID FROM 'Orders' WHERE CustomerID IN(				\
+				 	SELECT CustomerID FROM 'Orders' WHERE OrderID IN 				\
+					(SELECT OrderID FROM 'Order Details' WHERE ProductID=7)))))		\
+				GROUP BY Products.ProductID")
 	temp = cur.fetchall()
-	for row in temp:
-		print row
-	count = 0
-	for elem in temp:
-		count += 1
-	print count
+	#for row in temp:
+	#	for col in row:
+	#		print col
+ 	print len(temp)
 	
 	
 
