@@ -1,0 +1,11 @@
+c:Customer)-[:PURCHASED]->(o:Order)-[:ORDERS]->(p:Product {productID: '7'})
+
+Solution
+##Graph
+
+MATCH (c:Customer)-[:PURCHASED]->(o:Order)-[:ORDERS]->(p:Product) MATCH (c)-[:PURCHASED]->(o)-[:ORDERS]->(pd:Product {productID: '7'}) RETURN c, p
+
+MATCH (c:Customer)-[:PURCHASED]->(o:Order)-[:ORDERS]->(p:Product) WHERE (c)-[:PURCHASED]->(o)-[:ORDERS]->(p:Product {productID: '7'}) RETURN c, o,  p
+
+##table 
+MATCH (c:Customer)-[:PURCHASED]->(o:Order)-[:ORDERS]->(p:Product) WHERE (c)-[:PURCHASED]->(o)-[:ORDERS]->(p:Product {productID: '7'}) RETURN c.customerID, o.orderID, p.productName

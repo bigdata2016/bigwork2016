@@ -1,0 +1,12 @@
+MATCH (c:Customer)-[:PURCHASED]->(o:Order)-[:ORDERS]->(p:Product)-[:PART_OF]->(ca:Category) WHERE c.customerID = 'ALFKI' RETURN c.customerID, o.orderID, p.productName, ca.categoryName ORDER BY o.orderID
+## all orderIDS
+
+
+Solution
+##count product with orderID, orders which has more than two products graph
+
+MATCH (c:Customer {customerID: 'ALFKI'})-[:PURCHASED]->(o:Order)-[:ORDERS]->(p:Product) WITH  COUNT(p) AS cnt_p, COLLECT(p) AS pd, c, o WHERE cnt_p > 1 RETURN o, pd, c
+
+MATCH (c:Customer {customerID: 'ALFKI'})-[:PURCHASED]->(o:Order)-[:ORDERS]->(p:Product) WITH o, COUNT(p) AS cnt_p, COLLECT(p) AS pd WHERE cnt_p > 1 RETURN o.orderID, cnt_p
+
+

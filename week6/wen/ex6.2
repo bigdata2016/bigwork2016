@@ -1,0 +1,27 @@
+#excise of select node and return node entry by condition
+MATCH (o:Order) WHERE o.customerID IN ['ALFKI'] RETURN o.orderID
+MATCH (o:Order) WHERE o.customerID ='ALFKI' RETURN o.orderID
+#select Order while condition o.customerID = 'ALFKI' return o.orderID
+
+#exercise of select node and return ode entries by condition
+MATCH (o:Order) WHERE o.customerID ='ALFKI' RETURN o.customerID, o.orderID 
+#select node order, while customerID full fill the condition, return customerID and orderID
+
+##############solution
+MATCH (c:Customer {customerID: 'ALFKI'})-[:PURCHASED]->(o:Order)-[:ORDERS]->(p:Product) RETURN c, o, p
+
+#return  nodes of orders and p by relations which full fill the condition Graph
+
+
+MATCH (c:Customer {customerID: 'ALFKI'})-[:PURCHASED]->(o:Order)-[:ORDERS]->(p:Product) RETURN c.customerID, o.orderID, p.productName ORDER BY o.orderID
+
+#select node 'Customer' as c, set 'customerID' equal to 'ALFKI'. 
+#Use relation 'PURCHASED' from 'Customer' to 'Order', and also set 'Order' as 'o'. 
+#Use relation 'ORDERS' from 'ORder' to 'Product' then return customerID, orderID and productName.
+
+MATCH (c:Customer)-[:PURCHASED]->(o:Order)-[:ORDERS]->(p:Product) WHERE c.customerID = 'ALFKI' RETURN c.customerID, o.orderID, p.productName ORDER BY o.orderID
+
+#Set 'Customer', 'Order' and 'Prodcut' to 'c', 'o' and 'p' then group them by relations first in 'PURCHASE' then next 'ORDERS'.
+#The nodes have to met condition 'c.customer' equal 'ALFKI' which to be grouped.
+return customerID, orderID and productName.
+
