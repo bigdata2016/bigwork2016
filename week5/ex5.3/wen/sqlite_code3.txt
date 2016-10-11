@@ -1,0 +1,16 @@
+import sqlite3
+conn = sqlite3.connect('E:/repo/bigwork2016/week5/ex5.1/northwind.db')
+conn.text_factory = bytes
+curr=conn.cursor()
+curr.execute("SELECT Orders.OrderID,Products.ProductID,ProductName,CategoryID 
+			  FROM Orders,[Order Details],Products 
+		      WHERE Orders.OrderID=[Order Details].OrderID AND 
+				    [Order Details].ProductID=Products.ProductID AND 
+				    Orders.OrderID IN (SELECT Orders.OrderID FROM Orders,[Order Details],Products WHERE Orders.OrderID=[Order 						Details].OrderID AND [Order Details].ProductID=Products.ProductID AND 
+					CustomerID='ALFKI' 
+			  GROUP BY Orders.OrderID 
+			  HAVING count(CategoryID)>1)")
+records=curr.fetchall()
+for record in records:
+	print(record)
+conn.close()
