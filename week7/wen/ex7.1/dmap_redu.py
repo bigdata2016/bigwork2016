@@ -5,26 +5,6 @@ import re
 import time			
 start_time = time.time()
 
-#class MRWordCount(MRJob):
-#
-#	def mapper(self, key, line):
-#		yield "chars", len(line)
-#		yield "words", len(line.split())
-#		yield "lines", 1
-#
-#	def reducer(self, key, values):
-#		yield key, sum(values)
-#
-#	def gen(self, key, line):
-#		for line in sys.stdin:		
-#			words = line.split()
-#			for word in words:
-#				print "%s\t%d" % (word, 1)
-#	
-#if __name__ == '__main__':
-#	MRWordCount.run()
-
-
 WORD_RE = re.compile(r"[\w']+")
 
 
@@ -32,10 +12,13 @@ class MRMostUsedWord(MRJob):
 
     def steps(self):
         return [
-            MRStep(mapper=self.mapper_get_words,
-                   combiner=self.combiner_count_words,
-                   reducer=self.reducer_count_words),
+            #MRStep(mapper=self.mapper_get_words,
+            #      combiner=self.combiner_count_words,
+            #     reducer=self.reducer_count_words),
             #MRStep(reducer=self.reducer_find_max_word)
+			 MRStep(mapper=self.mapper_get_words,
+                   combiner=self.combiner_count_words)
+           
         ]
 
     def mapper_get_words(self, _, line):
@@ -47,16 +30,16 @@ class MRMostUsedWord(MRJob):
         # optimization: sum the words we've seen so far
         yield (word, sum(counts))
 
-    def reducer_count_words(self, word, counts):
-        # send all (num_occurrences, word) pairs to the same reducer.
-        # num_occurrences is so we can easily use Python's max() function.      
-		yield (sum(counts), word)
+    #def reducer_count_words(self, word, counts):
+    #    # send all (num_occurrences, word) pairs to the same reducer.
+    #    # num_occurrences is so we can easily use Python's max() function.      
+	#	yield (sum(counts), word)
 		#yield None, (sum(counts), word)
 
-    # discard the key; it is just None
+    #discard the key; it is just None
     #def reducer_find_max_word(self, _, word_count_pairs):
-        # each item of word_count_pairs is (count, word),
-        # so yielding one results in key=counts, value=word
+    #    # each item of word_count_pairs is (count, word),
+    #    # so yielding one results in key=counts, value=word
     #    yield max(word_count_pairs)
 
 
