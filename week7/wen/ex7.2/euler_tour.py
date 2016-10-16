@@ -2,32 +2,31 @@
 from mrjob.job import MRJob
 from mrjob.step import MRStep
 import re
-
+import sys
+import time			
 WORD_RE = re.compile(r"[\w']+")
 
-#The class is to find euler tour
 class MR_euler_tour(MRJob):
-	
-	##
-	def steps(self):
-		return [MRStep(mapper = self.mapper_nodes_edge),
-				MRStep(mapper = self.mapper_paths, 
-					   combiner = self.combiner_paths,
-					   reducer = self.reducer_paths)]
 
-	## get the first line of each file
-	#def mapper_nodes_edge(self, _, line):
+	#map each nodes and set each occurence as 1
+	def mapper(self, key, line):
+		for elem in line.split():
+			yield elem, 1
 
-	## map each line as a key path and give 1 as value
-	def mapper_paths(self, _, line):
-		
-	## combine all mapped key, count the how many value of each key has
-	##count each line 
-	def combiner_paths(self, word, counts):
-		
-	## analise each value of key, which if the value is even or odd
-	def reducer_paths(self, word, counts):
-		
-#run the class
+	#count each nodes occurences and determine the if the graph is a Euler Tour
+	#If it checks a node has odd degree and out put reason
+	#Else it will check all nodes 			
+	def reducer(self, key, values):
+		v = [v for v in values]
+		if sum(v) % 2 != 0:
+			print ("Node%s has odd degree of %d" % (key, sum(v)))
+			sys.exit()
+		yield key, sum(v)
+		del v[:]
+
+##Run MRJob
 if __name__ == '__main__':
-	MR_euler_tour.run()
+    MR_euler_tour.run()	
+##If program didn't stop it the graph Euler Tour
+print "The graph has Euler Tour"
+
