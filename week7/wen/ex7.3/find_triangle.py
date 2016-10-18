@@ -1,7 +1,8 @@
 #!/usr/bin/python
 from mrjob.job import MRJob
 import re
-
+import time
+start_time = time.time()
 WORD_RE = re.compile(r"[\w']+")
 
 class Count_triangles(MRJob):
@@ -16,11 +17,10 @@ class Count_triangles(MRJob):
 			self.mr(mapper=self.mapper_div_duplicate),
 		]
 
-	##convert to undirect graph
 	def mapper_1(self, _, line):
 		yield line.split()[0],line.split()[1]
 		yield line.split()[1],line.split()[0]
-	##
+	
 	def reducer_1(self, key, value):
 		yield key, self.concatenate(value)
 
@@ -49,3 +49,4 @@ class Count_triangles(MRJob):
 
 if __name__ == '__main__':
 	Count_triangles.run()
+print (time.time() - start_time)

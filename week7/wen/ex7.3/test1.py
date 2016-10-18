@@ -13,25 +13,26 @@ class MR_triangle(MRJob):
 				MRStep(mapper=self.mapper_2, reducer=self.reducer_2),##
 				MRStep(mapper=self.mapper_3, reducer=self.reducer_3)]
 
+	def concat(self, input_value):
+		lis = []
+		for i in input_value:
+			lis.append(i)
+		return lis
+	
 	def mapper_1(self, _, line):
-		for v in line.split():
-			yield v, line.split()
+		yield line.split()[0],line.split()[1]
+		yield line.split()[1],line.split()[0]
+	
 		
 	def reducer_1(self, key, value):
-		vj = []
-		for e in value:
-			for v in e:
-				if v != key:
-					vj.append(v)
-		yield key, vj
+		yield key, self.concat(value)
 	
 	def mapper_2(self, key, value):
 		for vj in value:
 			yield sorted((key, vj)), value
 	
 	def reducer_2(self, key, value):
-		w = [w for w in value]
-		yield key, w
+		yield key, self.concat(value)
 
 	def mapper_3(self, key, value):
 		yield None, len(set(value[0]).intersection(value[1]))
