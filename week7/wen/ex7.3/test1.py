@@ -7,7 +7,7 @@ import time
 start_time = time.time()
 
 class MR_triangle(MRJob):
-	
+		
 	def steps(self):
 		return [MRStep(mapper=self.mapper_1, reducer=self.reducer_1),##find vjs for each vi
 				MRStep(mapper=self.mapper_2, reducer=self.reducer_2),##
@@ -41,5 +41,5 @@ class MR_triangle(MRJob):
 		yield "Triangles",sum(value)/3
 
 if __name__ == '__main__':
-    MR_triangle.run()	
+	MR_triangle.run()	
 print (time.time() - start_time)
