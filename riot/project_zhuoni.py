@@ -15,7 +15,9 @@ from matplotlib import pyplot
 import math
 import time
 import os.path
-from pymongo import MongoClient;
+#import ijson
+from pymongo import MongoClient
+Match_List = '/work/repos/bigwork2016/riot/Match_List/Match_List.json'
 
 #================================= end of includes ==================================================================
 
@@ -44,19 +46,17 @@ def getUserInput():
         f.close();
     return res;
 
-##request game api, arg = summonerID
+##request game api, arg = summonerID, return recent game table
 def getRecentHistory(SummonerID):
         rURL= "https://" +Region.lower()+ ".api.pvp.net/api/lol/" + Region.lower()+ "/v1.3/game/by-summoner/" + `SummonerID`+ "/recent?api_key=" + Key;
-        #print rURL;
         r_data=getJSONReply(rURL);
-        #print r_data;
         r_data['_id']=r_data['summonerId'];
         r_data.pop('summonerId');
-        with io.open('RecentHistory/%s.txt' % str(SummonerID), 'w', encoding='utf-8') as f:
-            f.write(unicode(json.dumps(r_data, ensure_ascii=False)))
+        #with io.open('RecentHistory/%s.txt' % str(SummonerID), 'w', encoding='utf-8') as f:
+        #    f.write(unicode(json.dumps(r_data, ensure_ascii=False)))
         return r_data;
 
-##request summoner API, return summoner table, arg = (summonerName, Region, Key) 
+##request summoner API, return summoner table, arg = (summonerName, Region, Key), return summonerName, summoner byname table
 def ReformatJSON(SummonerName,Region,Key):
     idURL = "https://" +Region.lower()+ ".api.pvp.net/api/lol/" +Region.lower()+ "/v1.4/summoner/by-name/" + SummonerName+ "?api_key=" + Key;
     id_data = getJSONReply(idURL);
@@ -66,7 +66,7 @@ def ReformatJSON(SummonerName,Region,Key):
     #print idRes;
     return idRes,id_data;
 
-##request summoner API, return summoner table, arg = (summonerID, Region, key)
+##request summoner API, return summoner table, arg = (summonerID, Region, key) , summonerID, summoner table
 def ReformatJSONbyid(SummonerID,Region,Key):
     idURL = "https://" +Region.lower()+ ".api.pvp.net/api/lol/" +Region.lower()+ "/v1.4/summoner/" +SummonerID+ "?api_key=" +Key
     id_data = getJSONReply(idURL);
@@ -75,16 +75,52 @@ def ReformatJSONbyid(SummonerID,Region,Key):
     idRes.pop('id');
     with io.open('Summoner/%s.txt' % str(SummonerID), 'w', encoding='utf-8') as f:
           f.write(unicode(json.dumps(idRes, ensure_ascii=False)))
-    return idRes,id_data;
+    return idRes,id_data;		
 
-def recFellow(ID_List):
-	getRecentHistory()
+##matchlist api request 
+def getmatchId(SummonerID,Region, Key):
+	#url request as the default API config
+	matchList_URL = "https://" +Region.lower()+ ".api.pvp.net/api/lol/" +Region.lower()+ "/v2.2/matchlist/by-summoner/" +`SummonerID`+ "?api_key=" +Key 
+	matchList_data = getJSONReply(matchList_URL)																	
+	matches = matchList_data['matches']
+	match_id = []
+	#match_id = {}, try loop with dict
+	for i in range(len(matches)):
+		match_id.append(matches[i]['matchId'])
+	
+	#with io.open('Match_List/%s.json' % str(match_id), 'w', encoding='utf-8') as fo:
+	#	fo.write(unicode(json.dumps(matches, ensure_ascii=False)))
+	#	fo.close()
+
+	fo = io.open('Match_List.json', 'w', encoding='utf-8')
+	fo.write(unicode(json.dumps(matches, ensure_ascii=False))) ##can't save match_ID because of too many request
+	#print(match_id)
+	return match_id
+
+
+	
+def getmatch(matchID, Region ,key):
+	match_URL = "https://" +Region.lower()+ ".api.pvp.net/api/lol/" +Region.lower()+ "/v2.2/match/" +`matchID`+ "?api_key=" +Key 
+	match_data = getJSONReply(match_URL)
+	match = match_data['participants']
+	print(match)
+	#playerID = []
+	#for i in range(len(match)):
+	#	match[j]['player']
+		#for j in range(len(match[j]['player'])):
+			#playerID.append()
+			#print(match[j]['player'])
+	#for i in range(len(match))
+	#	return playersID
+	
+
     
 #================================= Main =============================================================================
 _InputFields= getUserInput();
 SummonerName=_InputFields[0];
 Region=_InputFields[1];
 Key=_InputFields[2];
+
 print "----------------------------------------------------------------------";
 print "If you've inputted wrong data, please delete or modify RitoMongo.conf" ;
 print "----------------------------------------------------------------------";
@@ -106,6 +142,11 @@ for i in range(len(rdata["games"])):
     for j in range(len(rdata["games"][i]["fellowPlayers"])):
         idlist.append(rdata["games"][i]["fellowPlayers"][j]["summonerId"])
 len(set(idlist))
+
+##matchlist, contain the match_list of matches by summonerID
+match_list = getmatchId(SummonerID, Region, Key)
+#print(match_list)
+#playersID = getmatch(match_list, Region, Key)
 
 
 
